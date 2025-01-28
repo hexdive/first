@@ -1,0 +1,56 @@
+﻿@* @{ *@
+@*     ViewData["Title"] = "All Staff Members"; *@
+@* } *@
+
+@* <h2>All Staff Members </h2> *@
+
+@* <table class="table table-bordered"> *@
+@*     <thead> *@
+@*         <tr> *@
+@*             <th>ID</th> *@
+@*             <th>Name</th> *@
+@*             <th>Email</th> *@
+@*         </tr> *@
+@*     </thead> *@
+@*     <tbody id="staffTable"> *@
+        
+@*     </tbody> *@
+@* </table> *@
+
+@* @section Scripts { *@
+@*     <script> *@
+        
+@*         function loadStaffs() { *@
+@*             fetch('/Staffs/GetAllStaffs') *@
+@*                 .then(response => { *@
+@*                     if (!response.ok) { *@
+@*                         throw new Error("Network response was not ok"); *@
+@*                     } *@
+@*                     return response.json(); *@
+@*                 }) *@
+@*                 .then(data => { *@
+@*                     let tableContent = ""; *@
+@*                     if (data.length === 0) { *@
+@*                         tableContent = "<tr><td colspan='3'>No staff records found.</td></tr>"; *@
+@*                     } else { *@
+@*                         data.forEach(staff => { *@
+@*                             tableContent += ` *@
+@*                                 <tr> *@
+@*                                     <td>${staff.id}</td> *@
+@*                                     <td>${staff.name}</td> *@
+@*                                     <td>${staff.email}</td> *@
+@*                                 </tr>`; *@
+@*                         }); *@
+@*                     } *@
+@*                     document.getElementById("staffTable").innerHTML = tableContent; *@
+@*                 }) *@
+@*                 .catch(error => { *@
+@*                     console.error("Error fetching staff data:", error); *@
+@*                     document.getElementById("staffTable").innerHTML = "<tr><td colspan='3'>Failed to load data.</td></tr>"; *@
+@*                 }); *@
+@*         } *@
+
+      
+@*         document.addEventListener("DOMContentLoaded", loadStaffs); *@
+@*     </script> *@
+@* } *@
