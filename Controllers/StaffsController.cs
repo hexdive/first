@@ -26,22 +26,22 @@ namespace first.Controllers
         }
 
         // GET: Staffs/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var staff = await _context.Staff
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (staff == null)
-            {
-                return NotFound();
-            }
+        //    var staff = await _context.Staff
+        //        .FirstOrDefaultAsync(m => m.ID == id);
+        //    if (staff == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(staff);
-        }
+        //    return View(staff);
+        //}
 
         // GET: Staffs/Create
         public IActionResult Create()
@@ -52,18 +52,39 @@ namespace first.Controllers
         // POST: Staffs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("Name,Email")] Staff staff)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(staff);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(staff);
+        //}
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Email")] Staff staff)
+        public async Task<IActionResult> Create([FromBody] Staff staff)
         {
+            if (staff == null) return BadRequest("Invalid data received.");
+
             if (ModelState.IsValid)
             {
                 _context.Add(staff);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Staff created successfully" });
             }
-            return View(staff);
+            return BadRequest(ModelState);
         }
+
+
+
+
+        // POST: Staffs/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 
         // GET: Staffs/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -84,36 +105,72 @@ namespace first.Controllers
         // POST: Staffs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Email")] Staff staff)
+        //{
+        //    if (id != staff.ID)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+
+        //            _context.Update(staff);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!StaffExists(staff.ID))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(staff);
+        //}
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Email")] Staff staff)
+        public async Task<IActionResult> Edit(int id, [FromBody] Staff staff)
         {
-            if (id != staff.ID)
+            if (staff == null)
             {
-                return NotFound();
+                return BadRequest(new { success = false, message = "Invalid staff data" });
             }
+
+
+            var existingStaff = await _context.Staff.FindAsync(id);
+            if (existingStaff == null)
+            {
+                return NotFound(new { success = false, message = "Staff not found" });
+            }
+
+
+            existingStaff.Name = staff.Name;
+            existingStaff.Email = staff.Email;
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(staff);
                     await _context.SaveChangesAsync();
+                    return Json(new { success = true, message = "Staff updated successfully" });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StaffExists(staff.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return StatusCode(500, new { success = false, message = "Concurrency error occurred" });
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(staff);
+
+            return BadRequest(new { success = false, message = "Invalid data" });
         }
 
         // GET: Staffs/Delete/5
@@ -153,5 +210,22 @@ namespace first.Controllers
         {
             return _context.Staff.Any(e => e.ID == id);
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllStaffs()
+        {
+            var staffs = await _context.Staff.ToListAsync();
+            return Json(staffs); 
+        }
+
+
+        public IActionResult AllStaffs()
+        {
+            return View();
+        }
     }
-}
+
+
+
+    }
