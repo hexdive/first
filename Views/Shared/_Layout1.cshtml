@@ -23,13 +23,13 @@
 	<meta name="author" content="Phoenixcoded" />
 
 	<!-- Favicon icon -->
-	<link rel="icon" href="assets/images/favicon.svg" type="image/x-icon">
+	<link rel="icon" href="/assets/images/favicon.svg" type="image/x-icon">
 	<!-- fontawesome icon -->
-	<link rel="stylesheet" href="assets/fonts/fontawesome/css/fontawesome-all.min.css">
+	<link rel="stylesheet" href="/assets/fonts/fontawesome/css/fontawesome-all.min.css">
 	<!-- animation css -->
-	<link rel="stylesheet" href="assets/plugins/animation/css/animate.min.css">
+	<link rel="stylesheet" href="/assets/plugins/animation/css/animate.min.css">
 	<!-- vendor css -->
-	<link rel="stylesheet" href="assets/css/style.css">
+	<link rel="stylesheet" href="/assets/css/style.css">
 
 </head>
 
@@ -1281,7 +1281,9 @@
 								<div class="col-sm-12">
 									
 									
-											@RenderBody()
+									@RenderBody()
+									@RenderSection("Scripts", required: false)
+
 										
 									</div>
 								</div>
@@ -1342,11 +1344,11 @@
 		<![endif]-->
 	<!-- Warning Section Ends -->
 	<!-- Required Js -->
-	<script src="assets/js/vendor-all.min.js"></script>
-	<script src="assets/plugins/bootstrap/js/popper.min.js"></script>
-	<script src="assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-	<script src="assets/js/pcoded.min.js"></script>
-	<script src="assets/js/menu-setting.js"></script>
+	<script src="/assets/js/vendor-all.min.js"></script>
+	<script src="/assets/plugins/bootstrap/js/popper.min.js"></script>
+	<script src="/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="/assets/js/pcoded.min.js"></script>
+	<script src="/assets/js/menu-setting.js"></script>
 
 	<div class="footer-fab">
 		<div class="b-bg">
