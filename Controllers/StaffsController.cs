@@ -42,37 +42,20 @@ namespace first.Controllers
 
             return View(staff);
         }
-
-        // GET: Staffs/Create
+        //get : staff
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Staffs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Name,Email")] Staff staff)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(staff);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(staff);
-        //}
-
+        /// POST: Staffs/Create
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Staff staff)
         {
-            if (staff == null) return BadRequest("Invalid data received.");
+            if (staff == null) return Json(new { success = false, message = "Invalid staff data" });
 
             if (ModelState.IsValid)
-            {  
-
+            {
                 _context.Add(staff);
                 await _context.SaveChangesAsync();
                 return Json(new { success = true, message = "Staff created successfully" });
@@ -83,9 +66,15 @@ namespace first.Controllers
 
 
 
-        // POST: Staffs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+
+
+
+
+
+
+
+
 
         // GET: Staffs/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -103,41 +92,7 @@ namespace first.Controllers
             return View(staff);
         }
 
-        // POST: Staffs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Email")] Staff staff)
-        //{
-        //    if (id != staff.ID)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-
-        //            _context.Update(staff);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!StaffExists(staff.ID))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(staff);
-        //}
+        
 
         [HttpPost]
         public async Task<IActionResult> Edit(int id, [FromBody] Staff staff)
@@ -212,13 +167,26 @@ namespace first.Controllers
             return _context.Staff.Any(e => e.ID == id);
         }
 
-
+        //All staff Get
         [HttpGet]
-        public async Task<IActionResult> GetAllStaffs()
+        public async Task<IActionResult> GetAllStaffs(string name, string email)
         {
-            var staffs = await _context.Staff.ToListAsync();
-            return Json(staffs);
+            var query = _context.Staff.AsQueryable();
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(s => s.Name.Contains(name));
+            }
+
+            if (!string.IsNullOrEmpty(email))
+            {
+                query = query.Where(s => s.Email.Contains(email));
+            }
+
+            var staffList = await query.ToListAsync();
+            return Json(staffList);
         }
+
 
 
 

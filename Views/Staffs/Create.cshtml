@@ -1,8 +1,7 @@
 ﻿@model first.Models.Staff
 
 @{
-    ViewData["Title"] = "Create";
-    Layout = "~/Views/Shared/_Layout1.cshtml";
+     Layout = null;
 }
 
 <h1>Create</h1>
@@ -10,8 +9,8 @@
 <h4>Staff</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div class="col-md-12">
+        <form id=" createStaffForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -30,43 +29,37 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+
+<script>
+    function submitForm() {
+        
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+
+        
+        const formData = {
+            Name: name,
+            Email: email
+        };
+
+        
+        console.log('Form Data in JSON format:', JSON.stringify(formData));
+
+        fetch('/staffs/Create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
-    <script>
-        function submitForm() {
-            // Gather form values
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-
-            // Create JSON object
-            const formData = {
-                Name: name,
-                Email: email
-            };
-
-            // Log JSON data (or send it via an AJAX request)
-            console.log('Form Data in JSON format:', JSON.stringify(formData));
-
-            fetch('/Staffs/Create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-    </script>
-}
+</script>
