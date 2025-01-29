@@ -197,9 +197,39 @@ namespace first.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool studentExists(int id)
+        private bool StudentExists(int id)
         {
             return _context.Student.Any(e => e.ID == id);
         }
+
+
+        //All student Get
+        [HttpGet]
+        public async Task<IActionResult> GetAllStudents(string name, string email)
+        {
+            var query = _context.Student.AsQueryable();
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(s => s.Name.Contains(name));
+            }
+
+            if (!string.IsNullOrEmpty(email))
+            {
+                query = query.Where(s => s.Email.Contains(email));
+            }
+
+            var studentList = await query.ToListAsync();
+            return Json(studentList);
+        }
+
+
+
+
+        public IActionResult AllStudents()
+        {
+            return View();
+        }
     }
 }
+

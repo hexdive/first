@@ -41,17 +41,16 @@
 
 <script>
     function submitForm() {
-        // Gather form values
+   
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
 
-        // Create JSON object
+ 
         const formData = {
             Name: name,
             Email: email
         };
 
-        // Log JSON data (or send it via an AJAX request)
         console.log('Form Data in JSON format:', JSON.stringify(formData));
 
         fetch('/students/Create', {
