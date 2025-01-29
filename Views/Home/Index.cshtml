@@ -1,62 +1,107 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
-
-<h2>All Staff Members</h2>
+﻿ @{ 
+     ViewData["Title"] = "Home Page"; 
+ } 
 
 
-<button id="loadStaffsBtn" class="btn btn-primary">Show Staff List</button>
+@* <h2>All Staff Members</h2> *@
 
 
-<div id="staffTableContainer" style="display: none; margin-top: 20px;">
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-            </tr>
-        </thead>
-        <tbody id="staffTable">
-         
-        </tbody>
-    </table>
-</div>
-
-@section Scripts {
-    <script>
-        function loadStaffs() {
-            fetch('/Staffs/GetAllStaffs')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok");
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    let tableContent = "";
-                    if (data.length === 0) {
-                        tableContent = "<tr><td colspan='3'>No staff records found.</td></tr>";
-                    } else {
-                        data.forEach(staff => {
-                            tableContent += `
-                                <tr>
-                                    <td>${staff.id}</td>
-                                    <td>${staff.name}</td>
-                                    <td>${staff.email}</td>
-                                </tr>`;
-                        });
-                    }
-                    document.getElementById("staffTable").innerHTML = tableContent;
-                    document.getElementById("staffTableContainer").style.display = "block";
-                })
-                .catch(error => {
-                    console.error("Error fetching staff data:", error);
-                    document.getElementById("staffTable").innerHTML = "<tr><td colspan='3'>Failed to load data.</td></tr>";
-                });
-        }
+@* <button id="loadStaffsBtn" class="btn btn-primary">Show Staff List</button> *@
 
 
-        document.getElementById("loadStaffsBtn").addEventListener("click", loadStaffs);
-    </script>
-}
+@* <div id="staffTableContainer" style="display: none; margin-top: 20px;"> *@
+@*     <table class="table table-bordered"> *@
+@*         <thead> *@
+@*             <tr> *@
+@*                 <th>ID</th> *@
+@*                 <th>Name</th> *@
+@*                 <th>Email</th> *@
+@*                 <th>Actions</th> *@
+@*             </tr> *@
+@*         </thead> *@
+@*         <tbody id="staffTable"> *@
+           
+@*         </tbody> *@
+@*     </table> *@
+@* </div> *@
+
+@* @section Scripts { *@
+@*     <script> *@
+@*         function loadStaffs() { *@
+@*             fetch('/Staffs/GetAllStaffs') *@
+@*                 .then(response => { *@
+@*                     if (!response.ok) { *@
+@*                         throw new Error("Network response was not ok"); *@
+@*                     } *@
+@*                     return response.json(); *@
+@*                 }) *@
+@*                 .then(data => { *@
+@*                     let tableContent = ""; *@
+@*                     if (data.length === 0) { *@
+@*                         tableContent = "<tr><td colspan='4'>No staff records found.</td></tr>"; *@
+@*                     } else { *@
+@*                         data.forEach(staff => { *@
+@*                             tableContent += ` *@
+@*                                 <tr> *@
+@*                                     <td>${staff.id}</td> *@
+@*                                     <td>${staff.name}</td> *@
+@*                                     <td>${staff.email}</td> *@
+@*                                     <td> *@
+@*                                         <button class="btn btn-info" onclick="viewStaff(${staff.id})">View</button> *@
+@*                                         <button class="btn btn-warning" onclick="editStaff(${staff.id})">Edit</button> *@
+@*                                         <button class="btn btn-danger" onclick="deleteStaff(${staff.id})">Delete</button> *@
+@*                                     </td> *@
+@*                                 </tr>`; *@
+@*                         }); *@
+@*                     } *@
+@*                     document.getElementById("staffTable").innerHTML = tableContent; *@
+@*                     document.getElementById("staffTableContainer").style.display = "block"; *@
+@*                 }) *@
+@*                 .catch(error => { *@
+@*                     console.error("Error fetching staff data:", error); *@
+@*                     document.getElementById("staffTable").innerHTML = "<tr><td colspan='4'>Failed to load data.</td></tr>"; *@
+@*                 }); *@
+@*         } *@
+
+@*         function viewStaff(id) { *@
+@*             window.location.href = `/Staffs/Details/${id}`; *@
+@*         } *@
+
+@*         function editStaff(id) { *@
+@*             window.location.href = `/Staffs/Edit/${id}`; *@
+@*         } *@
+
+
+@*         function deleteStaff(id) { *@
+@*             if (confirm("Are you sure you want to delete this staff member?")) { *@
+@*                 fetch(`/Staffs/Delete/${id}`, { *@
+@*                     method: "POST", *@
+@*                     headers: { *@
+@*                         "Content-Type": "application/json" *@
+@*                     } *@
+@*                 }) *@
+@*                 .then(response => { *@
+@*                     if (!response.ok) { *@
+@*                         throw new Error("Network response was not ok"); *@
+@*                     } *@
+@*                     return response.json(); *@
+@*                 }) *@
+@*                 .then(data => { *@
+@*                     if (data.success) { *@
+@*                         alert("Staff deleted successfully!"); *@
+@*                         loadStaffs();  *@
+@*                     } else { *@
+@*                         alert("Failed to delete staff: " + data.message); *@
+@*                     } *@
+@*                 }) *@
+@*                 .catch(error => { *@
+@*                     console.error("Error deleting staff:", error); *@
+@*                     alert("An error occurred while deleting the staff."); *@
+@*                 }); *@
+@*             } *@
+@*         } *@
+
+
+@*         document.getElementById("loadStaffsBtn").addEventListener("click", loadStaffs); *@
+@*     </script> *@
+@* } *@

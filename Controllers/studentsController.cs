@@ -10,22 +10,22 @@ using first.Models;
 
 namespace first.Controllers
 {
-    public class StaffsController : Controller
+    public class studentsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public StaffsController(ApplicationDbContext context)
+        public studentsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Staffs
+        // GET: students
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Staff.ToListAsync());
+            return View(await _context.Student.ToListAsync());
         }
 
-        // GET: Staffs/Details/5
+        // GET: students/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,61 +33,52 @@ namespace first.Controllers
                 return NotFound();
             }
 
-            var staff = await _context.Staff
+            var student = await _context.Student
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (staff == null)
+            if (student == null)
             {
                 return NotFound();
             }
 
-            return View(staff);
+            return View(student);
         }
 
-        // GET: Staffs/Create
+        // GET: students/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Staffs/Create
+        // POST: students/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         //[HttpPost]
         //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Name,Email")] Staff staff)
+        //public async Task<IActionResult> Create([Bind("ID,Name,Email")] student student)
         //{
         //    if (ModelState.IsValid)
         //    {
-        //        _context.Add(staff);
+        //        _context.Add(student);
         //        await _context.SaveChangesAsync();
         //        return RedirectToAction(nameof(Index));
         //    }
-        //    return View(staff);
+        //    return View(student);
         //}
-
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Staff staff)
+        public async Task<IActionResult> Create([FromBody] student student)
         {
-            if (staff == null) return BadRequest("Invalid data received.");
+            if (student == null) return BadRequest("Invalid data received.");
 
             if (ModelState.IsValid)
-            {  
+            {
 
-                _context.Add(staff);
+                _context.Add(student);
                 await _context.SaveChangesAsync();
-                return Json(new { success = true, message = "Staff created successfully" });
+                return Json(new { success = true, message = "student created successfully" });
             }
             return BadRequest(ModelState);
         }
-
-
-
-
-        // POST: Staffs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-
-        // GET: Staffs/Edit/5
+        // GET: students/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -95,22 +86,22 @@ namespace first.Controllers
                 return NotFound();
             }
 
-            var staff = await _context.Staff.FindAsync(id);
-            if (staff == null)
+            var student = await _context.Student.FindAsync(id);
+            if (student == null)
             {
                 return NotFound();
             }
-            return View(staff);
+            return View(student);
         }
 
-        // POST: Staffs/Edit/5
+        // POST: students/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         //[HttpPost]
         //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Email")] Staff staff)
+        //public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Email")] student student)
         //{
-        //    if (id != staff.ID)
+        //    if (id != student.ID)
         //    {
         //        return NotFound();
         //    }
@@ -119,13 +110,12 @@ namespace first.Controllers
         //    {
         //        try
         //        {
-
-        //            _context.Update(staff);
+        //            _context.Update(student);
         //            await _context.SaveChangesAsync();
         //        }
         //        catch (DbUpdateConcurrencyException)
         //        {
-        //            if (!StaffExists(staff.ID))
+        //            if (!studentExists(student.ID))
         //            {
         //                return NotFound();
         //            }
@@ -136,34 +126,34 @@ namespace first.Controllers
         //        }
         //        return RedirectToAction(nameof(Index));
         //    }
-        //    return View(staff);
+        //    return View(student);
         //}
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, [FromBody] Staff staff)
+        public async Task<IActionResult> Edit(int id, [FromBody] student student)
         {
-            if (staff == null)
+            if (student == null)
             {
-                return BadRequest(new { success = false, message = "Invalid staff data" });
+                return BadRequest(new { success = false, message = "Invalid student data" });
             }
 
 
-            var existingStaff = await _context.Staff.FindAsync(id);
-            if (existingStaff == null)
+            var existingStudent = await _context.Student.FindAsync(id);
+            if (existingStudent == null)
             {
-                return NotFound(new { success = false, message = "Staff not found" });
+                return NotFound(new { success = false, message = "student not found" });
             }
 
 
-            existingStaff.Name = staff.Name;
-            existingStaff.Email = staff.Email;
+            existingStudent.Name = student.Name;
+            existingStudent.Email = student.Email;
 
             if (ModelState.IsValid)
             {
                 try
                 {
                     await _context.SaveChangesAsync();
-                    return Json(new { success = true, message = "Staff updated successfully" });
+                    return Json(new { success = true, message = "Student updated successfully" });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -174,7 +164,7 @@ namespace first.Controllers
             return BadRequest(new { success = false, message = "Invalid data" });
         }
 
-        // GET: Staffs/Delete/5
+        // GET: students/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -182,52 +172,34 @@ namespace first.Controllers
                 return NotFound();
             }
 
-            var staff = await _context.Staff
+            var student = await _context.Student
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (staff == null)
+            if (student == null)
             {
                 return NotFound();
             }
 
-            return View(staff);
+            return View(student);
         }
 
-        // POST: Staffs/Delete/5
+        // POST: students/Delete/5
         [HttpPost, ActionName("Delete")]
-        
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var staff = await _context.Staff.FindAsync(id);
-            if (staff != null)
+            var student = await _context.Student.FindAsync(id);
+            if (student != null)
             {
-                _context.Staff.Remove(staff);
+                _context.Student.Remove(student);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool StaffExists(int id)
+        private bool studentExists(int id)
         {
-            return _context.Staff.Any(e => e.ID == id);
-        }
-
-
-        [HttpGet]
-        public async Task<IActionResult> GetAllStaffs()
-        {
-            var staffs = await _context.Staff.ToListAsync();
-            return Json(staffs);
-        }
-
-
-
-        public IActionResult AllStaffs()
-        {
-            return View();
+            return _context.Student.Any(e => e.ID == id);
         }
     }
-
-
-
-    }
+}
