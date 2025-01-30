@@ -17,8 +17,9 @@ namespace first.Data
 
         public DbSet<Staff> Staff { get; set; }
 
-        public DbSet <student> Student { get; set; }
-       
+        public DbSet <Patient> Patient { get; set; }
+
+        public DbSet<Student> Student { get; set; }
 
     }
 }

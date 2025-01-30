@@ -1,0 +1,195 @@
+﻿
+
+<h1>Patient</h1>
+
+<p>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" id="openCreateModal" data-bs-target="#exampleModal">
+        Create Patient
+    </button>
+    
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Patient Attending</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyContent">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</p>
+
+<div class="row mb-3">
+
+    <div class="col-md-3">
+        <input type="number" id="filterId" class="form-control" placeholder="Filter by ID">
+    </div>
+
+    <div class="col-md-3">
+        <input type="text" id="filterName" class="form-control" placeholder="Filter by Name">
+    </div>
+
+    <div class="col-md-3">
+        <input type="number" id="filterAge" class="form-control" placeholder="Filter by Age">
+    </div>
+
+
+    <div class="col-md-3">
+        <input type="text" id="filterEmail" class="form-control" placeholder="Filter by Email">
+    </div>
+
+    <div class="col-md-3">
+        <input type="date" id="filterDate" class="form-control" placeholder="Filter by Date">
+    </div>
+ 
+    <div class="col-md-3">
+        <button id="filterBtn" class="btn btn-primary">Filter</button>
+        <button id="clearFilterBtn" class="btn btn-secondary">Clear</button>
+    </div>
+</div>
+
+<button id="loadPatientsBtn" class="btn btn-success">Show Patient List</button>
+
+<div id="patientTableContainer" style="display: none; margin-top: 20px;">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Email</th>
+                <th>AtendingDate</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="PatientTable"></tbody>
+    </table>
+</div>
+
+@section Scripts {
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    <script>
+
+         $(document).ready(function () {
+            $("#openCreateModal").click(function () {
+                $.get("/Patients/Create", function (data) {
+                    $("#modalBodyContent").html(data);
+                    $("#exampleModal").modal("show");
+                });
+            });
+        });
+
+
+
+        function loadPatients(filters = {}) {
+            let queryParams = new URLSearchParams(filters).toString();
+
+            fetch('/Patients/GetAllPatients?' + queryParams)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    let tableContent = "";
+                    if (data.length === 0) {
+                        tableContent = "<tr><td colspan='4'>No Patient records found.</td></tr>";
+                    } else {
+                        data.forEach(patient => {
+                            tableContent += `
+                                <tr>
+                                    <td>${patient.id}</td>
+                                    <td>${patient.name}</td>
+                                    <td>${patient.age}</td>
+                                    <td>${patient.email}</td>
+                                    <td>${patient.attendingDate}</td>
+                                    <td>
+                                        <button class="btn btn-info" onclick="viewPatient(${patient.id})">View</button>
+                                        <button class="btn btn-warning" onclick="editPatient(${patient.id})">Edit</button>
+                                        <button class="btn btn-danger" onclick="deletePatient(${patient.id})">Delete</button>
+                                    </td>
+                                </tr>`;
+                        });
+                    }
+                    document.getElementById("patientTable").innerHTML = tableContent;
+                    document.getElementById("patientTableContainer").style.display = "block";
+                })
+                .catch(error => {
+                    console.error("Error fetching patient data:", error);
+                    document.getElementById("patientTable").innerHTML = "<tr><td colspan='4'>Failed to load data.</td></tr>";
+                });
+        }
+
+        function viewPatient(id) {
+            window.location.href = `/Patients/Details/${id}`;
+        }
+
+        function editPatient(id) {
+            window.location.href = `/Patients/Edit/${id}`;
+        }
+
+        function deletePatient(id) {
+            if (confirm("Are you sure you want to delete this patient member?")) {
+                fetch(`/Patients/Delete/${id}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert("Patient deleted successfully!");
+                        loadPatients();
+                    } else {
+                        alert("Failed to delete Patient: " + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error deleting Patient:", error);
+                    alert("An error occurred while deleting the Patient.");
+                });
+            }
+        }
+
+        document.getElementById("loadPatientsBtn").addEventListener("click", () => loadPatients());
+
+        document.getElementById("filterBtn").addEventListener("click", () => {
+            let filters = {
+                id: document.getElementById("filterId").value.trim(),
+                name: document.getElementById("filterName").value.trim(),
+                age: document.getElementById("filterAge").value.trim(),
+                email: document.getElementById("filterEmail").value.trim()
+                attendingDate: document.getElementById("filterAttendingDate").value.trim(),
+            };
+            loadPatients(filters);
+        });
+
+        document.getElementById("clearFilterBtn").addEventListener("click", () => {
+            document.getElementById("filterId").value = "";
+            document.getElementById("filterName").value = "";
+            document.getElementById("filterAge").value = "";
+            document.getElementById("filterEmail").value = "";
+            document.getElementById("filterAttendingDate").value = "";
+            loadPatients();
+        });
+    </script>
+    }

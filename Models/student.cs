@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace first.Models
 {
-    public class student
+    public class Student
     {
 
         [Key]
@@ -15,6 +16,14 @@ namespace first.Models
 
 
         public string Email { get; set; }
+
+        public string PhoneNumber { get; set; } = string.Empty;
+
+       public byte[]? ImageData { get; set; }
+
+        // Store Thumbnail in Binary Format
+        public byte[]? ThumbnailData { get; set; }
+
 
     }
 }

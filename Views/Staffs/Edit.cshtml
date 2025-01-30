@@ -45,6 +45,7 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
            function submitForm() {
             const id = document.getElementById('staffId').value
@@ -69,8 +70,15 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert("Staff updated successfully!");
-                    window.location.href = "/Staffs/Index"; 
+                    
+                    //window.location.href = "/Staffs/Index";
+                   Swal.fire({
+                     icon: 'success',
+                        title: 'Success!',
+                         text: 'Staff record created successfully.',
+                          timer: 25000,
+                            showConfirmButton: false
+        });
                 } else {
                     alert("Update failed: " + data.message);
                 }
